@@ -1,0 +1,10 @@
+# YOLO Dataset Configuration
+# Auto-generated from Roboflow COCO dataset
+
+path: /root/counting_jewelry/data/dataset
+train: images/train
+val: images/valid
+test: images/test
+
+nc: 2
+names: ['jewels', 'jewels']

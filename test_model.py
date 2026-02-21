@@ -6,10 +6,11 @@ import os
 from ultralytics import YOLO
 from pathlib import Path
 
-# Set up paths
-TRAINING_DIR = "/root/indriya/count_training"
-MODELS_DIR = os.path.join(TRAINING_DIR, "models")
-TEST_DIR = os.path.join(TRAINING_DIR, "test_results")
+# Set up paths - use current script directory
+SCRIPT_DIR = Path(__file__).parent.absolute()
+DATA_DIR = os.path.join(SCRIPT_DIR, "data")
+MODELS_DIR = os.path.join(DATA_DIR, "models")
+TEST_DIR = os.path.join(DATA_DIR, "test_results")
 
 # Create test results directory
 os.makedirs(TEST_DIR, exist_ok=True)
@@ -22,7 +23,7 @@ print("=" * 70)
 model_files = list(Path(MODELS_DIR).glob("jewelry_seg_best_*.pt"))
 if not model_files:
     # Try the training directory
-    best_weight = os.path.join(TRAINING_DIR, "runs/train/weights/best.pt")
+    best_weight = os.path.join(DATA_DIR, "runs/train/weights/best.pt")
     if os.path.exists(best_weight):
         model_path = best_weight
         print(f"Using model from training directory: {model_path}")

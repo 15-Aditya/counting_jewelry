@@ -5,15 +5,17 @@ This script supports both fresh training and resuming from checkpoints.
 
 import torch
 import os
+from pathlib import Path
 from ultralytics import YOLO
 from datetime import datetime
 
-# Set up paths
-TRAINING_DIR = "/root/indriya/count_training"
-DATASET_DIR = os.path.join(TRAINING_DIR, "dataset")
+# Set up paths - use current script directory
+SCRIPT_DIR = Path(__file__).parent.absolute()
+DATA_DIR = os.path.join(SCRIPT_DIR, "data")
+DATASET_DIR = os.path.join(DATA_DIR, "dataset")
 DATA_YAML = os.path.join(DATASET_DIR, "data.yaml")
-PROJECT_DIR = os.path.join(TRAINING_DIR, "runs")
-MODELS_DIR = os.path.join(TRAINING_DIR, "models")
+PROJECT_DIR = os.path.join(DATA_DIR, "runs")
+MODELS_DIR = os.path.join(DATA_DIR, "models")
 
 # Training configuration
 EPOCHS = 80
@@ -28,7 +30,8 @@ os.makedirs(MODELS_DIR, exist_ok=True)
 print("=" * 70)
 print("YOLO Instance Segmentation Training for Jewelry Detection")
 print("=" * 70)
-print(f"Training Directory: {TRAINING_DIR}")
+print(f"Script Directory: {SCRIPT_DIR}")
+print(f"Data Directory: {DATA_DIR}")
 print(f"Dataset Path: {DATA_YAML}")
 print(f"Output Directory: {PROJECT_DIR}")
 print(f"Models Directory: {MODELS_DIR}")

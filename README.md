@@ -5,7 +5,7 @@ This folder contains scripts and resources for training a YOLO instance segmenta
 ## 📁 Folder Structure
 
 ```
-count_training/
+counting_jewelry/
 ├── download_dataset.py         # Download dataset from Roboflow (COCO format)
 ├── convert_coco_to_yolo.py     # Convert COCO to YOLO segmentation format
 ├── train_segmentation.py       # Train YOLO instance segmentation model
@@ -13,10 +13,14 @@ count_training/
 ├── run_training.sh             # Automated training pipeline
 ├── requirements.txt            # Python dependencies
 ├── README.md                   # This file
-├── coco_dataset/               # COCO format dataset (created after download)
-├── dataset/                    # YOLO format dataset (created after conversion)
-├── runs/                       # Training runs and checkpoints
-└── models/                     # Final trained models
+└── data/                       # All data stored here (gitignored except important files)
+    ├── coco_dataset/           # COCO format dataset (created after download)
+    ├── dataset/                # YOLO format dataset (created after conversion)
+    │   └── data.yaml           # YOLO config (KEPT in git)
+    ├── runs/                   # Training runs and checkpoints
+    │   └── train/weights/      # All epoch weights (KEPT in git)
+    ├── models/                 # Timestamped model backups (KEPT in git)
+    └── venv/                   # Virtual environment (gitignored)
 ```
 
 ## 🚀 Quick Start
@@ -24,7 +28,7 @@ count_training/
 ### Option 1: Automated Pipeline (Recommended)
 
 ```bash
-cd /root/indriya/count_training
+cd /root/counting_jewelry
 ./run_training.sh
 ```
 
@@ -40,7 +44,7 @@ This will automatically:
 **1. Install Dependencies**
 
 ```bash
-cd /root/indriya/count_training
+cd /root/counting_jewelry
 pip install -r requirements.txt
 ```
 
@@ -83,12 +87,13 @@ You can modify these settings by editing [train_segmentation.py](train_segmentat
 
 After training, you'll find:
 
-1. **Training runs**: `runs/train/`
-   - Weights: `runs/train/weights/best.pt` and `runs/train/weights/last.pt`
-   - Training plots and metrics
+1. **Training runs**: `data/runs/train/`
+   - Weights: `data/runs/train/weights/best.pt` and `data/runs/train/weights/last.pt`
+   - Plus all epoch weights: `epoch1.pt`, `epoch2.pt`, ..., `epoch80.pt`
+   - Training plots and metrics: `results.csv`, `results.png`, etc.
    - Validation results
 
-2. **Backup models**: `models/`
+2. **Backup models**: `data/models/`
    - Timestamped copies of best and last weights
    - Format: `jewelry_seg_best_YYYYMMDD_HHMMSS.pt`
 
@@ -105,7 +110,7 @@ The script will automatically detect and resume from the last checkpoint.
 ## 💡 Tips
 
 - Monitor GPU usage with `nvidia-smi`
-- Check training progress in real-time: `tail -f runs/train/results.csv`
+- Check training progress in real-time: `tail -f data/runs/train/results.csv`
 - Adjust batch size if you encounter out-of-memory errors
 - Lower image size (e.g., 416) for faster training on limited resources
 
@@ -134,4 +139,4 @@ The script will automatically detect and resume from the last checkpoint.
 
 **No GPU**: Change `DEVICE = 0` to `DEVICE = 'cpu'` in `train_segmentation.py`
 
-**Conversion errors**: Check that COCO annotations exist in `coco_dataset/_annotations.coco.json`
+**Conversion errors**: Check that COCO annotations exist in `data/coco_dataset/train/_annotations.coco.json`

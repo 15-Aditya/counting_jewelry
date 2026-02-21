@@ -5,14 +5,18 @@
 
 set -e  # Exit on error
 
-TRAINING_DIR="/root/indriya/count_training"
-VENV_DIR="$TRAINING_DIR/venv"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+DATA_DIR="$SCRIPT_DIR/data"
+VENV_DIR="$DATA_DIR/venv"
 
-cd "$TRAINING_DIR"
+# Create data directory if it doesn't exist
+mkdir -p "$DATA_DIR"
 
 echo "============================================================"
 echo "YOLO Instance Segmentation Training Pipeline"
 echo "============================================================"
+echo "Script Directory: $SCRIPT_DIR"
+echo "Data Directory: $DATA_DIR"
 echo ""
 
 # Step 1: Create virtual environment
@@ -36,15 +40,15 @@ echo ""
 echo "📦 Step 2: Installing dependencies..."
 echo "------------------------------------------------------------"
 pip install --upgrade pip
-pip install -q -r requirements.txt
+pip install -q -r "$SCRIPT_DIR/requirements.txt"
 echo "✅ Dependencies installed."
 echo ""
 
 # Step 3: Download dataset
-if [ ! -f "$TRAINING_DIR/coco_dataset/_annotations.coco.json" ]; then
+if [ ! -f "$DATA_DIR/coco_dataset/train/_annotations.coco.json" ]; then
     echo "📥 Step 3: Downloading COCO dataset..."
     echo "------------------------------------------------------------"
-    python download_dataset.py
+    python "$SCRIPT_DIR/download_dataset.py"
     echo ""
 else
     echo "✅ Step 3: COCO dataset already exists. Skipping download."
@@ -52,10 +56,10 @@ else
 fi
 
 # Step 4: Convert COCO to YOLO format
-if [ ! -f "$TRAINING_DIR/dataset/data.yaml" ]; then
+if [ ! -f "$DATA_DIR/dataset/data.yaml" ]; then
     echo "🔄 Step 4: Converting COCO to YOLO format..."
     echo "------------------------------------------------------------"
-    python convert_coco_to_yolo.py
+    python "$SCRIPT_DIR/convert_coco_to_yolo.py"
     echo ""
 else
     echo "✅ Step 4: YOLO dataset already exists. Skipping conversion."
@@ -65,7 +69,7 @@ fi
 # Step 5: Start training
 echo "🏋️  Step 5: Starting model training..."
 echo "------------------------------------------------------------"
-python train_segmentation.py
+python "$SCRIPT_DIR/train_segmentation.py"
 
 echo ""
 echo "============================================================"

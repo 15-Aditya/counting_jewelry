@@ -4,10 +4,15 @@ Download jewelry dataset from Roboflow in COCO segmentation format.
 
 from roboflow import Roboflow
 import os
+from pathlib import Path
 
-# Set up paths
-TRAINING_DIR = "/root/indriya/count_training"
-COCO_DIR = os.path.join(TRAINING_DIR, "coco_dataset")
+# Set up paths - use current script directory
+SCRIPT_DIR = Path(__file__).parent.absolute()
+DATA_DIR = os.path.join(SCRIPT_DIR, "data")
+COCO_DIR = os.path.join(DATA_DIR, "coco_dataset")
+
+# Create data directory if it doesn't exist
+os.makedirs(DATA_DIR, exist_ok=True)
 
 print("=" * 60)
 print("Downloading Jewelry Dataset (COCO Instance Segmentation)")
