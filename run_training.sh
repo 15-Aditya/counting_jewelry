@@ -51,30 +51,53 @@ pip install -q -r "$SCRIPT_DIR/requirements.txt"
 echo "✅ Dependencies installed."
 echo ""
 
-# Step 3: Download dataset
+# Step 3: Check GPU availability
+echo "🖥️  Step 3: Checking GPU availability..."
+echo "------------------------------------------------------------"
+GPU_CHECK=$(python -c "import torch; print(torch.cuda.is_available())" 2>/dev/null)
+
+if [ "$GPU_CHECK" = "True" ]; then
+    GPU_NAME=$(python -c "import torch; print(torch.cuda.get_device_name(0))" 2>/dev/null)
+    GPU_COUNT=$(python -c "import torch; print(torch.cuda.device_count())" 2>/dev/null)
+    echo "✅ GPU detected: $GPU_NAME"
+    echo "   Number of GPUs: $GPU_COUNT"
+    echo "   Training will use GPU acceleration!"
+else
+    echo "❌ ERROR: No GPU detected!"
+    echo "   YOLO training requires GPU for reasonable training times."
+    echo "   Please ensure you're running on a machine with CUDA-capable GPU."
+    echo ""
+    echo "   If you still want to train on CPU, edit train_segmentation.py"
+    echo "   and change DEVICE = 0 to DEVICE = 'cpu'"
+    echo ""
+    exit 1
+fi
+echo ""
+
+# Step 4: Download dataset
 if [ ! -f "$DATA_DIR/coco_dataset/train/_annotations.coco.json" ]; then
-    echo "📥 Step 3: Downloading COCO dataset..."
+    echo "📥 Step 4: Downloading COCO dataset..."
     echo "------------------------------------------------------------"
     python "$SCRIPT_DIR/download_dataset.py"
     echo ""
 else
-    echo "✅ Step 3: COCO dataset already exists. Skipping download."
+    echo "✅ Step 4: COCO dataset already exists. Skipping download."
     echo ""
 fi
 
-# Step 4: Convert COCO to YOLO format
+# Step 5: Convert COCO to YOLO format
 if [ ! -d "$DATA_DIR/dataset/images/train" ]; then
-    echo "🔄 Step 4: Converting COCO to YOLO format..."
+    echo "🔄 Step 5: Converting COCO to YOLO format..."
     echo "------------------------------------------------------------"
     python "$SCRIPT_DIR/convert_coco_to_yolo.py"
     echo ""
 else
-    echo "✅ Step 4: YOLO dataset already exists. Skipping conversion."
+    echo "✅ Step 5: YOLO dataset already exists. Skipping conversion."
     echo ""
 fi
 
-# Step 5: Start training
-echo "🏋️  Step 5: Starting model training..."
+# Step 6: Start training
+echo "🏋️  Step 6: Starting model training..."
 echo "------------------------------------------------------------"
 echo "📝 Logging all output to: $LOG_FILE"
 echo ""

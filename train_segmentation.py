@@ -18,7 +18,7 @@ PROJECT_DIR = os.path.join(DATA_DIR, "runs")
 MODELS_DIR = os.path.join(DATA_DIR, "models")
 
 # Training configuration
-EPOCHS = 80
+EPOCHS = 30
 IMG_SIZE = 960
 BATCH_SIZE = 4
 DEVICE = 0  # GPU 0, use 'cpu' if no GPU available
