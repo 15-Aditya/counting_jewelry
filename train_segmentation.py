@@ -86,7 +86,7 @@ try:
     cos_lr=True,
     close_mosaic=10,
     save=True,
-    save_period=1,
+    save_period=5,
     resume=resume_flag,
     verbose=True,
     patience=10,

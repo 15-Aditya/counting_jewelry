@@ -2,34 +2,36 @@
 # LARGE DATA FOLDERS - Exclude from git
 # ============================================================
 
-# Roboflow downloaded images and annotations (2-10 GB)
+# Roboflow downloaded COCO dataset images and annotations (2-10 GB)
 data/coco_dataset/
 
-# YOLO format images (duplicate, ~2-10 GB)
+# YOLO format dataset images and labels (2-10 GB)
 data/dataset/images/
 data/dataset/labels/
 
-# Test inference results (not needed in repo)
+# Training runs folder - contains all epoch weights and training outputs (5-10 GB)
+data/runs/
+
+# Test inference results
 data/test_results/
 
 # Virtual environment
 data/venv/
 
-# Downloaded base YOLO models
+# Downloaded base YOLO models (100+ MB each)
 *.pt
-!**/weights/*.pt
-!**/models/*.pt
+
+# BUT keep timestamped model backups in models directory
+!data/models/*.pt
 
 # ============================================================
-# IMPORTANT FILES - Keep these (DO NOT ignore)
+# IMPORTANT FILES - Keep these (committed to git)
 # ============================================================
-# The following are explicitly NOT ignored:
-# - data/runs/train/weights/*.pt (all epoch weights)
-# - data/runs/train/*.csv (results.csv)
-# - data/runs/train/*.png (training plots)
-# - data/runs/train/args.yaml
-# - data/dataset/data.yaml (class names)
-# - data/models/*.pt (timestamped backups)
+# - data/dataset/data.yaml (class names and dataset config)
+# - data/models/*.pt (timestamped best/last model backups)
+# - All Python scripts
+# - requirements.txt
+# - README.md
 
 # ============================================================
 # PYTHON ARTIFACTS
