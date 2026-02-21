@@ -12,6 +12,9 @@ data/dataset/labels/
 # Training runs folder - contains all epoch weights and training outputs (5-10 GB)
 data/runs/
 
+# Training logs folder - contains timestamped training logs
+data/logs/
+
 # Test inference results
 data/test_results/
 

@@ -8,15 +8,22 @@ set -e  # Exit on error
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 DATA_DIR="$SCRIPT_DIR/data"
 VENV_DIR="$DATA_DIR/venv"
+LOGS_DIR="$DATA_DIR/logs"
 
-# Create data directory if it doesn't exist
+# Create necessary directories
 mkdir -p "$DATA_DIR"
+mkdir -p "$LOGS_DIR"
+
+# Create timestamped log file
+TIMESTAMP=$(date +"%Y%m%d_%H%M%S")
+LOG_FILE="$LOGS_DIR/training_${TIMESTAMP}.log"
 
 echo "============================================================"
 echo "YOLO Instance Segmentation Training Pipeline"
 echo "============================================================"
 echo "Script Directory: $SCRIPT_DIR"
 echo "Data Directory: $DATA_DIR"
+echo "Log File: $LOG_FILE"
 echo ""
 
 # Step 1: Create virtual environment
@@ -56,7 +63,7 @@ else
 fi
 
 # Step 4: Convert COCO to YOLO format
-if [ ! -f "$DATA_DIR/dataset/data.yaml" ]; then
+if [ ! -d "$DATA_DIR/dataset/images/train" ]; then
     echo "🔄 Step 4: Converting COCO to YOLO format..."
     echo "------------------------------------------------------------"
     python "$SCRIPT_DIR/convert_coco_to_yolo.py"
@@ -69,12 +76,17 @@ fi
 # Step 5: Start training
 echo "🏋️  Step 5: Starting model training..."
 echo "------------------------------------------------------------"
-python "$SCRIPT_DIR/train_segmentation.py"
+echo "📝 Logging all output to: $LOG_FILE"
+echo ""
+
+# Run training and capture output to both terminal and log file
+python "$SCRIPT_DIR/train_segmentation.py" 2>&1 | tee "$LOG_FILE"
 
 echo ""
 echo "============================================================"
 echo "✨ Training pipeline completed!"
 echo "============================================================"
 echo ""
+echo "📝 Full training log saved to: $LOG_FILE"
 echo "Note: Virtual environment is at: $VENV_DIR"
 echo "To activate it manually: source $VENV_DIR/bin/activate"
